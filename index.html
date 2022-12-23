@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Generator with DALL·E 2</title>
+
+    <!-- Font Raleway license here /fonts/OFL.txt -->
+    <style>
+      @font-face {
+        font-family: Raleway;
+        font-display: fallback;
+        src: local("Raleway"),
+          url("/fonts/Raleway-VariableFont_wght.woff2") format("woff2"),
+          url("/fonts/Raleway-VariableFont_wght.woff2") format("woff");
+      }
+    </style>
+  </head>
+
+  <body
+    class="min-w-full min-h-screen font-sans"
+    x-data="body"
+    x-init="$watch('apiKey', (val) => localStorage.setItem('apiKey', val))"
+  >
+    <main>
+      <div class="text-5xl text-center m-16">
+        <h1>
+          Image Generator with
+          <a href="https://openai.com/dall-e-2/">DALL·E 2</a>
+        </h1>
+        <p class="text-lg mt-2">
+          <a href="https://github.com/marc31/DALL-E-2"
+            >You can find source on my github account
+          </a>
+        </p>
+      </div>
+
+      <div class="max-w-3xl m-10 mx-auto px-5">
+        <div class="mb-6">
+          <div class="md:flex md:items-center mb-3">
+            <div class="md:w-1/3">
+              <label
+                class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                for="apikey"
+              >
+                Api Key
+              </label>
+            </div>
+            <div class="md:w-2/3">
+              <div class="relative">
+                <input
+                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 pl-4 pr-10 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="apikey"
+                  :type="showApiKey ? 'text' : 'password'"
+                  placeholder="***************"
+                  x-model="apiKey"
+                />
+
+                <button
+                  @click="showApiKey = !showApiKey"
+                  class="absolute right-2 top-2 text-gray-500"
+                >
+                  <svg
+                    x-show="!showApiKey"
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    ></path>
+                  </svg>
+
+                  <svg
+                    class="w-6 h-6"
+                    x-show="showApiKey"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="text-gray-400 text-right">
+            To obtain API key go to
+            <a href="https://beta.openai.com/account/api-keys"
+              >https://beta.openai.com/account/api-keys</a
+            >
+          </div>
+        </div>
+
+        <div class="md:flex md:items-center mb-6">
+          <div class="md:w-1/3">
+            <label
+              class="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+              for="size"
+            >
+              Image size
+            </label>
+          </div>
+          <div class="md:w-2/3">
+            <div class="relative">
+              <select
+                class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                id="size"
+                x-model="size"
+              >
+                <option selected value="256x256">256x256</option>
+                <option value="512x512">512x512</option>
+                <option value="1024x1024">1024x1024</option>
+              </select>
+              <div
+                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+              >
+                <svg
+                  class="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="md:flex md:items-center flex-col mb-6">
+          <label for="prompt" class="block mb-2 text-gray-500 font-bold"
+            >Your message</label
+          >
+          <textarea
+            id="prompt"
+            rows="4"
+            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 :bg-gray-700"
+            placeholder="Write your thoughts here..."
+            x-model="prompt"
+          ></textarea>
+        </div>
+
+        <div
+          x-if="error"
+          class="text-red-700 font-semibold text-xl"
+          x-text="error"
+        ></div>
+
+        <div class="flex justify-end mb-6">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded right-0 disabled:bg-gray-50 disabled:text-gray-500"
+            :disabled="loading"
+            @click="fetchImage"
+          >
+            <div x-show="!loading">Generate</div>
+            <div x-show="loading">Loading</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-center mb-12 min-h-[512px]">
+        <template x-if="imageUrl">
+          <div>
+            <img
+              :src="imageUrl"
+              @load="onload"
+              :class="loading ? 'filter grayscale blur-md contrast-200' : ''"
+            />
+          </div>
+        </template>
+      </div>
+
+      <div x-show="nbImage > 1">
+        <h3 class="text-center text-3xl m-10">History</h3>
+        <div class="flex flex-row gap-10 overflow-scroll w-full mb-10">
+          <template x-for="image in images">
+            <template x-if="image.url != imageUrl">
+              <div class="shrink-0 max-w-[100vw] p-2">
+                <img :src="image.url" class="mb-4" />
+                <p x-text="image.prompt"></p>
+              </div>
+            </template>
+          </template>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
